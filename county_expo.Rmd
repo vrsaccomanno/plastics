@@ -1,0 +1,44 @@
+---
+title: "CA_biosolids"
+author: "Vienna Saccomanno"
+date: "3/9/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load data
+library(readr)
+master <- read_csv("master_saccomanno_03.09.21.csv")
+View(master_saccomanno_03_09_21)
+```
+```{r}
+library(tidyverse)
+library(readr)
+library(ggplot2)
+library(scales)
+```
+
+```{r}
+county_summary <- master %>%
+  group_by(Receiving_County)%>%
+  summarise(total_applied = sum(Land_Application))%>%
+  mutate(Receiving_County= fct_reorder(Receiving_County,total_applied))
+
+View(county_summary)
+
+bar_chart<-ggplot(data=county_summary, aes(x=Receiving_County, y=total_applied)) +
+  geom_bar(stat="identity")+
+  theme(axis.text.x = element_text(angle = 45))+
+  scale_y_continuous(labels = comma)+
+  xlab("Receiving County") + ylab("Land Applied Biosolids (DMT) (2016-2017)")
+bar_chart
+
+require(scales)
+bar_chart + scale_x_continuous(labels = comma)
+
+```
+
